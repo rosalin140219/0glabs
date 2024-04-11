@@ -59,20 +59,28 @@ function install_storage_node() {
 	screen -dmS 0g_storage ../target/release/zgs_node --config config.toml
 }
 
+function start_storage_node() {
+    cd 0g-storage-node/run
+    screen -dmS 0g_storage ../target/release/zgs_node --config config.toml
+}
+
 function check_service_log() {
-    screen -r 0g_storage
-    tail -n100 log/zgs.log.2024-04*
+    current_date=$(date +"%Y-%m-%d")
+    tail -f /root/0g-storage-node/run/log/zgs.log.$current_date
 }
 
 # 主菜单
 function main_menu() {
-	clear
-    echo "请选择要执行的操作:"
+	echo "请选择要执行的操作:"
     echo "1. 安装常规节点"
-    read -p "请输入选项（1）: " OPTION
+    echo "2. 查看常规版本节点日志"
+    echo "3. 重启节点"
+    read -p "请输入选项（1-3）: " OPTION
 
     case $OPTION in
     1) install_storage_node ;;
+    2) check_service_log ;;
+    3) start_storage_node;;
     *) echo "无效选项。" ;;
     esac
 }
