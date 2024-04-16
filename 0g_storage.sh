@@ -50,9 +50,8 @@ function install_storage_node() {
 	cargo build --release
 
 	read -p "请输入miner_id(必须保证唯一，不以0x开头): " miner_id
-	read -p "请输入miner_key(私钥，不以0x开头): " miner_key
-
 	sed -i "s/miner_id = .*/miner_id = \"$miner_id\"/" run/config.toml
+	read -p "请输入miner_key(私钥，不以0x开头): " miner_key
     sed -i "s/miner_key = .*/miner_key = \"$miner_key\"/" run/config.toml
 
 	cd run

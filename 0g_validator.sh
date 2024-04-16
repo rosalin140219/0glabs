@@ -6,16 +6,16 @@ function install() {
 sudo apt update && sudo apt install curl git jq build-essential gcc unzip wget lz4 -y
 
 # 检查 go 是否已安装
-if ! command -v go &> /dev/null
-then
-    echo 'go未安装，新增开始执行安装......'
-    # Download the Go installer
-    wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
-    # Extract the archive
-    sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
-    # Add /usr/local/go/bin to the PATH environment variable by adding the following line to your ~/.profile.
-    export PATH=$PATH:/usr/local/go/bin
-fi
+cd $HOME && \
+ver="1.21.3" && \
+wget "https://golang.org/dl/go$ver.linux-amd64.tar.gz" && \
+sudo rm -rf /usr/local/go && \
+sudo tar -C /usr/local -xzf "go$ver.linux-amd64.tar.gz" && \
+rm "go$ver.linux-amd64.tar.gz" && \
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> ~/.bash_profile && \
+source ~/.bash_profile && \
+go version
+
 # 构建evmosd二进制文件
 git clone https://github.com/0glabs/0g-evmos.git
 cd 0g-evmos
@@ -82,7 +82,7 @@ function create_wallet() {
 # 提取十六进制地址以向水龙头请求一些代币
 function get_address() {
     read -p "请输入钱包名称: " WALLET_NAME
-    echo "0x$(evmosd debug addr $(evmosd keys show $WALLET_NAME -a) | grep hex | awk '{print $3}')"
+    echo "0x$(/root/go/bin/evmosd debug addr $(/root/go/bin/evmosd keys show $WALLET_NAME -a) | grep hex | awk '{print $3}')"
 }
 
 # 查看余额
